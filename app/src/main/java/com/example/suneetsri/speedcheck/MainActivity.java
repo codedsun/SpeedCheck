@@ -1,12 +1,16 @@
 package com.example.suneetsri.speedcheck;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private EditText name;      //Field for Saving User Name
@@ -41,7 +45,10 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("USER_NUMBER2",cont2);
                 editor.putString("USER_NUMBER3",cont3);
                 editor.commit();
-                startActivity(new Intent(MainActivity.this,UserProfile.class));
+                Intent intent = new Intent(MainActivity.this,UserProfile.class);
+                intent.putExtra("name",username);
+                Toast.makeText(MainActivity.this, "Info Saved", Toast.LENGTH_SHORT).show();
+                startActivity(intent);
                 finish();
             }
         });
