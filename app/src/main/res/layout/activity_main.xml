@@ -1,18 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.suneetsri.speedcheck.MainActivity">
-
+    tools:context="com.example.suneetsri.speedcheck.MainActivity"
+    android:orientation="vertical">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="SpeedCheck"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:layout_marginTop="80dp"
+        android:textColor="#8b0000"/>
+    <EditText
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="NAME"
+        android:layout_marginTop="20dp"
+        android:id="@+id/username"/>
+    <EditText
+        android:id="@+id/econtact1"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="Emergency Contact 1"
+        android:layout_marginTop="15dp"
+        android:inputType="number"/>
 
-</android.support.constraint.ConstraintLayout>
+    <EditText
+        android:id="@+id/econtact2"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="Emergency Contact 2"
+        android:layout_marginTop="15dp"
+        android:inputType="number"/>
+    <EditText
+        android:id="@+id/econtact3"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="Emergency Contact 3"
+        android:layout_marginTop="15dp"
+        android:inputType="number"/>
+    <Button
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_gravity="center"
+        android:layout_marginTop="15dp"
+        android:id="@+id/nextButton"/>
+
+</LinearLayout>
