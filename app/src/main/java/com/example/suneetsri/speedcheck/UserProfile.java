@@ -27,6 +27,13 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
     ImageButton policeIcon;
 
     @Override
+    protected void onStop() {
+
+        super.onStop();
+        Application.user.setLoopCondition(0);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_profile);

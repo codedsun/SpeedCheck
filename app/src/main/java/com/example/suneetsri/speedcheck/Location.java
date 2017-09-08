@@ -34,6 +34,7 @@ public class Location extends Service implements LocationListener, GoogleApiClie
     LocationRequest locationRequest;
     Intent i = new Intent("NOW");
     float speed;
+    float speedLimit;
     NotificationManager notificationManager;
     NotificationCompat.Builder builder;
     Notification notificationCompat;
@@ -102,10 +103,12 @@ public class Location extends Service implements LocationListener, GoogleApiClie
 
     @Override
     public void onLocationChanged(android.location.Location location) {
-       // speed= Float.parseFloat(sharedPreferences.getString("SPEED_LIMIT","0"));
+       speedLimit= Float.parseFloat(sharedPreferences.getString("SPEED_LIMIT","0"));
        // speed=location.getSpeed();
         speed=0;
+
         Application.user.setCurrentSpeed(speed);
+
 
         //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
         if(speed<=10.0)
@@ -118,25 +121,34 @@ public class Location extends Service implements LocationListener, GoogleApiClie
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);*/
         }
-        else if ((speed <=50.0)&&(speed>10.0)) {
+        else if ((speed <speedLimit)&&(speed>10.0)) {
             builder.setContentText("You are Driving");
             builder.setSubText("Drive Safe and Follow the rules of Road Ministry");
 
-
             notificationCompat = builder.build();
             notificationManager.notify(1,notificationCompat);
-            Intent i=new Intent(this,UserProfile.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            vibrator.vibrate(new long[]{1,2,3,4,5,6,7,8},1);
+
+            if(Application.user.getLoopCondition()==0)
+            {
+                Intent i=new Intent(this,UserProfile.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                vibrator.vibrate(new long[]{1,2,3,4,5,6,7,8},1);
+                Application.user.setLoopCondition(1);
+
+            }
 
         }
-        else if(speed>=60)
+        else if(speed>=speedLimit)
         {
-            Intent i=new Intent(this,OverlayScreen.class);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(i);
-            mp.start();
+
+            if(Application.user.getLoopConditionOverlay()==0) {
+                Intent i = new Intent(this, OverlayScreen.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                mp.start();
+                Application.user.setLoopConditionOverlay(1);
+            }
         }
         else {
         }

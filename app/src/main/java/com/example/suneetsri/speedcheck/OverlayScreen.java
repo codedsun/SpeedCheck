@@ -21,6 +21,7 @@ public class OverlayScreen extends
     protected void onStop() {
         super.onStop();
         vibrator.cancel();
+        Application.user.setLoopConditionOverlay(0);
 
     }
 

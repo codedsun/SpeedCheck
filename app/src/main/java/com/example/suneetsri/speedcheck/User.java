@@ -9,6 +9,24 @@ public class User {
     private String number1,number2,number3;
     private String notificationEnabled;
     private float currentSpeed;
+    private int loopCondition=0;
+    private int loopConditionOverlay=0;
+
+    public int getLoopCondition() {
+        return loopCondition;
+    }
+
+    public void setLoopCondition(int loopCondition) {
+        this.loopCondition = loopCondition;
+    }
+
+    public int getLoopConditionOverlay() {
+        return loopConditionOverlay;
+    }
+
+    public void setLoopConditionOverlay(int loopConditionOverlay) {
+        this.loopConditionOverlay = loopConditionOverlay;
+    }
 
     public String getNotificationEnabled() {
         return notificationEnabled;
