@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">SpeedCheck</string>
+    <string name="app_intro">IntroScreen</string>
+    <string name="gps_network_not_enabled">Gps Network Not Enabled</string>
+    <string name="open_location_settings">Open Location Settings</string>
+    <string name="Cancel">Cancel</string>
 </resources>

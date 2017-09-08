@@ -43,7 +43,7 @@
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:id="@+id/userSettings"
-            android:background="@drawable/infoicon"/>
+            android:background="@drawable/settingsicon"/>
 
     </LinearLayout>
 
