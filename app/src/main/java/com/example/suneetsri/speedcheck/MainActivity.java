@@ -1,5 +1,6 @@
 package com.example.suneetsri.speedcheck;
 
+import android.app.*;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent i1=new Intent(this,LocationService.class);
+        Intent i1=new Intent(this,Location.class);
         startService(i1);
         econtact1=(EditText)findViewById(R.id.econtact1);
         name=(EditText)findViewById(R.id.username);
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 username=name.getText().toString();
+
                 cont1=econtact1.getText().toString();
                 cont2=econtact2.getText().toString();
                 cont3=econtact3.getText().toString();
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.putString("USER_NUMBER2",cont2);
                 editor.putString("USER_NUMBER3",cont3);
                 editor.putString("SPEED_LIMIT",speedLimit.getText().toString());
+                editor.putString("NOTIFICATION_ENABLED","T");
                 editor.commit();
                 startActivity(new Intent(MainActivity.this,UserProfile.class));
                 finish();

@@ -1,16 +1,14 @@
 package com.example.suneetsri.speedcheck;
 
-import android.app.ActivityManager;
-import android.app.IntentService;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.Service;
-import android.content.ComponentName;
+import android.app.*;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.Vibrator;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -20,60 +18,41 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
-import java.util.List;
-
 /**
  * Created by suneetsri on 7/9/17.
  */
 
-public class LocationService extends IntentService implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Location extends Service implements LocationListener, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+    FusedLocationProviderApi fusedLocationProviderApi;
     GoogleApiClient googleApiClient;
-    Intent i=new Intent("NOW");
+    LocationRequest locationRequest;
+    Intent i = new Intent("NOW");
     float speed;
     NotificationManager notificationManager;
     NotificationCompat.Builder builder;
     Notification notificationCompat;
     SharedPreferences sharedPreferences;
-
-
-
-    FusedLocationProviderApi fusedLocationProviderApi;
-    LocationRequest locationRequest;
-
-
-    public LocationService()
-    {
-        super("Location");
-
-
-    }
+    Vibrator vibrator;
+    MediaPlayer mp;
 
     @Override
-    public void onDestroy() {
-        googleApiClient.disconnect();
-
-    }
-
-    @Override
-    public void onStart(@Nullable Intent intent, int startId) {
-        fusedLocationProviderApi = LocationServices.FusedLocationApi;
-        googleApiClient = new GoogleApiClient.Builder(this).
-                addConnectionCallbacks(this)
+    public void onStart(Intent intent, int startId) {
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        sharedPreferences=getSharedPreferences("SPEEDCHECK_APP",MODE_PRIVATE);
-        Log.e("", "onStart:sas " );
-        notificationManager= (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        sharedPreferences = getSharedPreferences("SPEEDCHECK_APP", MODE_PRIVATE);
+        Log.e("", "onStart:sas ");
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         googleApiClient.connect();
-        builder=new
+        builder = new
                 NotificationCompat.Builder(this)
                 .setAutoCancel(false)
                 .setContentText("You are Offline")
@@ -81,24 +60,16 @@ public class LocationService extends IntentService implements LocationListener, 
                 .setContentTitle("Speed")
                 .setOngoing(true);
 
-
-
-
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        mp=MediaPlayer.create(getApplicationContext(),R.raw.alarm);
 
     }
 
-    /**
-     * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     * @param name Used to name the worker thread, important only for debugging.
-     */
-    public LocationService(String name) {
-        super(name);
-    }
 
+    @Nullable
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
     @Override
@@ -106,11 +77,6 @@ public class LocationService extends IntentService implements LocationListener, 
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setInterval(10000);
-        ActivityManager am = (ActivityManager) this .getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> taskInfo = am.getRunningTasks(1);
-        ComponentName componentInfo = taskInfo.get(0).topActivity;
-        Log.e("TAG", "CURRENT Activity ::" + taskInfo.get(0).topActivity.getClassName()+"   Package Name :  "+componentInfo.getPackageName());
-
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -122,28 +88,26 @@ public class LocationService extends IntentService implements LocationListener, 
             return;
         }
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
-
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(getApplicationContext(), "Connection Suspended", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+        Toast.makeText(getApplicationContext(), "Connection Failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onLocationChanged(Location location) {
-
-
-        i.putExtra("loc",Float.toString(location.getSpeed()));
+    public void onLocationChanged(android.location.Location location) {
+       // speed= Float.parseFloat(sharedPreferences.getString("SPEED_LIMIT","0"));
        // speed=location.getSpeed();
+        speed=0;
+        Application.user.setCurrentSpeed(speed);
 
-        speed= Float.parseFloat(sharedPreferences.getString("SPEED_LIMIT","50"));
-        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
+        //LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(i);
         if(speed<=10.0)
         {
             notificationCompat = builder.build();
@@ -161,15 +125,18 @@ public class LocationService extends IntentService implements LocationListener, 
 
             notificationCompat = builder.build();
             notificationManager.notify(1,notificationCompat);
-            Intent i=new Intent(this,OverlayScreen.class);
+            Intent i=new Intent(this,UserProfile.class);
             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
+            vibrator.vibrate(new long[]{1,2,3,4,5,6,7,8},1);
 
         }
         else if(speed>=60)
         {
-
-
+            Intent i=new Intent(this,OverlayScreen.class);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(i);
+            mp.start();
         }
         else {
         }
