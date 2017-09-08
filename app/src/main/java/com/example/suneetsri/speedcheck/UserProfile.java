@@ -43,7 +43,7 @@ public class UserProfile extends AppCompatActivity implements OnMapReadyCallback
         settingIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(UserProfile.this,Settings.class));
+                startActivity(new Intent(UserProfile.this,SettingsNew.class));
             }
         });
         Intent i = getIntent();
