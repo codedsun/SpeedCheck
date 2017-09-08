@@ -15,8 +15,8 @@ import android.widget.Toast;
  */
 
 public class ReadSMS extends BroadcastReceiver {
-    private static final String SMS_SENT_INTENT_FILTER = "";
-    private static final String SMS_DELIVERED_INTENT_FILTER="";
+    private static final String SMS_SENT_INTENT_FILTER = "com.speedcheck.sms_send";
+    private static final String SMS_DELIVERED_INTENT_FILTER="com.speedcheck.sms_delivered";
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -59,7 +59,7 @@ public class ReadSMS extends BroadcastReceiver {
         //Reading incoming SMS END
         //Auto-sending SMS to the Sender START
         if(autoreply){
-            String message = "hey, bro wassup";
+            String message = "Auto-reply : Hi, I am busy driving!. Talk to u later!";
 
             String phnNo = senderNum; //preferable use complete international number
 
@@ -69,7 +69,7 @@ public class ReadSMS extends BroadcastReceiver {
                     SMS_DELIVERED_INTENT_FILTER), 0);
 
             SmsManager sms = SmsManager.getDefault();
-            sms.sendTextMessage(phnNo, null, message, sentPI, deliveredPI);
+            sms.sendTextMessage(phnNo,null, message, sentPI, deliveredPI);
             Log.d("Receiver : ","Messege Sent");
         }
         //Auto-reply END
